@@ -1,75 +1,86 @@
-EduScore - Sistema de Lançamento de Notas
-Sistema desenvolvido para facilitar o lançamento de notas escolares com cálculo automático de média ponderada. O projeto utiliza Spring Boot 3 no backend e Angular 16 no frontend.
+# EduScore - Sistema de Gestão de Notas
 
-Como Executar o Projeto
-Pré-requisitos
-Java 17 ou superior.
+O **EduScore** é uma plataforma robusta desenvolvida para facilitar o lançamento de notas escolares em lote. O sistema permite que professores selecionem turmas e disciplinas para gerenciar avaliações de forma dinâmica e intuitiva.
 
-Node.js 18 ou superior.
+## 🚀 Tecnologias
 
-Angular CLI instalado (npm install -g @angular/cli).
+### Frontend
+- **Angular 18+** (Standalone Components)
+- **Angular Material** (UI/UX)
+- **Reactive/Template-driven Forms**
+- **RxJS** para gerenciamento de chamadas assíncronas
+- **Tailwind CSS** ou Custom CSS para estilização avançada
 
-1. Backend (Spring Boot)
-O backend utiliza um banco de dados H2 em memória, o que dispensa a instalação de um servidor de banco de dados externo.
+### Backend
+- **Java 17 / Spring Boot 3**
+- **Spring Data JPA**
+- **H2 Database** (Banco de dados em memória para desenvolvimento)
+- **Maven** para gerenciamento de dependências
 
-Navegue até a pasta api/:
+---
 
-Bash
-cd api
-Execute a aplicação usando Maven:
+## 🛠️ Arquitetura do Banco de Dados
 
-Bash
-./mvnw spring-boot:run
-A API estará disponível em http://localhost:8080.
+O sistema utiliza um banco de dados relacional com as seguintes entidades principais:
 
-Console do Banco H2: Acesse http://localhost:8080/h2-console (JDBC URL: jdbc:h2:mem:eduscore_db).
+- **Turma**: Agrupamento de alunos.
+- **Disciplina**: Matérias lecionadas (Matemática, Português, etc).
+- **Aluno**: Vinculado a uma turma.
+- **Avaliacao**: Provas ou trabalhos vinculados a uma disciplina específica, contendo pesos para o cálculo da média.
+- **Nota**: A relação final entre Aluno, Avaliação e o valor atingido.
 
-Swagger UI (Documentação): Acesse http://localhost:8080/swagger-ui/index.html.
+### Modelo de Dados (Seed Inicial)
+O arquivo `src/main/resources/data.sql` popula o ambiente com:
+- Turmas: `9º Ano A` e `1º Ano Médio`.
+- Disciplinas com avaliações configuradas por peso.
+- Alunos distribuídos entre as turmas para testes de carga em lote.
 
-2. Frontend (Angular)
-Navegue até a pasta web/:
+---
 
-Bash
-cd ../eduscore-web
-Instale as dependências:
+## 💻 Funcionalidades do Frontend
 
-Bash
-npm install
-Inicie o servidor de desenvolvimento:
+### Grade de Lançamento Dinâmica
+A principal inovação do frontend é a **Grade Dinâmica**. Diferente de tabelas estáticas, as colunas de avaliações são geradas em tempo real:
+1. O usuário seleciona a **Turma** e a **Disciplina**.
+2. O sistema busca as avaliações cadastradas para aquela disciplina no banco.
+3. A tabela se reconstrói automaticamente injetando os inputs de notas entre a coluna "Nome" e "Média Final".
 
-Bash
-ng serve
-Acesse o sistema em http://localhost:4200.
+### Cálculo de Média Automático
+O sistema realiza o cálculo de média em tempo real no cliente (Client-side) conforme as notas são digitadas, fornecendo feedback visual imediato (notas abaixo de 6.0 ficam em destaque vermelho).
 
-🛠 Decisões Técnicas
-Arquitetura do Backend
-Organização em Camadas: Segui o padrão clássico Controller -> Service -> Repository -> Model. Isso garante que a regra de negócio (cálculo da média) fique isolada no Service, facilitando testes unitários e manutenção.
+### Persistência em Lote
+Ao clicar em "Salvar Lançamentos em Lote", o frontend mapeia o dicionário de notas (`notasMap`) para um DTO de transporte, enviando todas as atualizações em uma única requisição POST, otimizando o tráfego de rede e a performance do banco.
 
-Database Seed: Utilizei o arquivo data.sql para garantir que a aplicação já inicie com dados de teste (turmas, alunos e disciplinas), conforme solicitado nos requisitos.
+---
 
-Validação de Dados: Implementei validações via Bean Validation (@Min, @Max) para garantir que notas estejam entre 0-10 e pesos entre 1-5.
+## ⚙️ Configuração do Ambiente
 
-Documentação: O uso do SpringDoc OpenAPI (Swagger) foi priorizado para permitir o teste independente dos endpoints.
+### Requisitos
+- Node.js 18+
+- JDK 17+
+- Angular CLI
 
-Arquitetura do Frontend
-Reactive Forms: Optei por formulários reativos para gerenciar a tabela de notas dinâmica. Isso permite validar os dados em tempo real e reagir a mudanças de input para atualizar a média ponderada sem chamadas ao servidor.
+### Executando o Backend
+1. Navegue até a pasta `backend`.
+2. Execute o comando: `./mvnw spring-boot:run`
+3. O H2 Console estará disponível em `http://localhost:8080/h2-console` (User: `sa`, Pass: ` `).
 
-Componentização: A lógica da tabela foi desacoplada em componentes reutilizáveis, utilizando Angular Material para uma interface limpa e responsiva.
+### Executando o Frontend
+1. Navegue até a pasta `frontend`.
+2. Instale as dependências: `npm install`
+3. Inicie o servidor com proxy para o backend: `npm start`
+4. Acesse: `http://localhost:4200`
 
-Services: Centralizei as chamadas HTTP em um ApiService utilizando o padrão Observable do RxJS para lidar com a asincronidade de forma eficiente.
+---
 
-Estratégia de Salvamento
-Lançamento em Lote: O sistema permite editar múltiplas notas de uma vez e enviá-las em um único POST JSON, reduzindo o overhead de rede e melhorando a experiência do usuário (UX).
+## 📝 Endpoints Principais (API)
 
-Idempotência: O salvamento no banco de dados utiliza uma lógica de "Upsert" (Update ou Insert) baseada na chave composta alunoId + avaliacaoId, garantindo que não haja duplicidade de registros.
+| Método | Endpoint | Descrição |
+| :--- | :--- | :--- |
+| GET | `/api/turmas` | Lista todas as turmas |
+| GET | `/api/disciplinas` | Lista todas as disciplinas |
+| GET | `/api/alunos?turmaId={id}` | Busca alunos por turma |
+| GET | `/api/avaliacoes?disciplinaId={id}` | Busca provas por disciplina |
+| POST | `/api/notas/lote` | Salva uma lista de notas |
 
-Dados de Seed (Carga Inicial)
-Ao iniciar o backend, os seguintes dados são carregados automaticamente:
-
-Turmas: "9º Ano A" e "1º Ano Médio".
-
-Disciplinas: "Matemática" e "Português".
-
-Avaliações: Configuradas com pesos variáveis (ex: Prova peso 5, Trabalho peso 2).
-
-Alunos: Vinculados às respectivas turmas para teste imediato.
+---
