@@ -1,0 +1,76 @@
+<div class="boletim-wrapper">
+  <header class="header-section">
+    <h1>EduScore - Gestão de Notas</h1>
+    <p>Selecione os filtros para carregar a grade de alunos e avaliações.</p>
+  </header>
+
+  <div class="filter-card mat-elevation-z3">
+    <mat-form-field appearance="outline">
+      <mat-label>Selecione a Turma</mat-label>
+      <mat-select #t (selectionChange)="onFiltroChange(t.value, d.value)">
+        @for (turma of turmas; track turma.id) {
+          <mat-option [value]="turma.id">{{ turma.nome }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Selecione a Disciplina</mat-label>
+      <mat-select #d (selectionChange)="onFiltroChange(t.value, d.value)">
+        @for (disc of disciplinas; track disc.id) {
+          <mat-option [value]="disc.id">{{ disc.nome }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (alunos.length > 0 && displayedColumns.length > 0) {
+    <div class="table-container mat-elevation-z8">
+      <table mat-table [dataSource]="alunos">
+
+        <ng-container matColumnDef="nome">
+          <th mat-header-cell *matHeaderCellDef> Nome do Aluno </th>
+          <td mat-cell *matCellDef="let aluno" class="aluno-name"> {{ aluno.nome }} </td>
+        </ng-container>
+
+        @for (av of avaliacoes; track av.id) {
+          <ng-container [matColumnDef]="'av' + av.id">
+            <th mat-header-cell *matHeaderCellDef class="header-center">
+              {{ av.nome }}
+              <div class="weight-label">Peso {{ av.peso }}</div>
+            </th>
+            <td mat-cell *matCellDef="let aluno" class="cell-center">
+              <input type="number"
+                     class="grade-input"
+                     min="0" max="10" step="0.1"
+                     [(ngModel)]="notasMap[getNotaKey(aluno.id, av.id)]"
+                     placeholder="0.0">
+            </td>
+          </ng-container>
+        }
+
+        <ng-container matColumnDef="media">
+          <th mat-header-cell *matHeaderCellDef class="header-center"> Média Final </th>
+          <td mat-cell *matCellDef="let aluno" class="cell-center">
+            <span class="final-score" [class.low-score]="parseMedia(calcularMedia(aluno.id)) < 6">
+              {{ calcularMedia(aluno.id) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <div class="footer-actions">
+        <button mat-raised-button color="primary" (click)="salvarTudo()">
+          SALVAR LANÇAMENTOS EM LOTE
+        </button>
+      </div>
+    </div>
+  } @else if (turmaSelecionada && disciplinaSelecionada) {
+    <div class="empty-state">
+      <p>Nenhum aluno encontrado para os critérios selecionados.</p>
+    </div>
+  }
+</div>
