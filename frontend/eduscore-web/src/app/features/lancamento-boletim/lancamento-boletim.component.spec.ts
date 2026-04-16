@@ -1,19 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule } from '@angular/forms';
+import { LancamentoBoletimComponent } from './lancamento-boletim.component';
 
-import { LancamentoBoletim } from './lancamento-boletim.component';
-
-describe('LancamentoBoletim', () => {
-  let component: LancamentoBoletim;
-  let fixture: ComponentFixture<LancamentoBoletim>;
+describe('LancamentoBoletimComponent', () => {
+  let component: LancamentoBoletimComponent;
+  let fixture: ComponentFixture<LancamentoBoletimComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LancamentoBoletim],
+      imports: [ LancamentoBoletimComponent, HttpClientTestingModule, FormsModule ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LancamentoBoletim);
+    fixture = TestBed.createComponent(LancamentoBoletimComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

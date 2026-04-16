@@ -1,8 +1,10 @@
+---
+
 # EduScore - Sistema de Gestão de Notas
 
 O **EduScore** é uma plataforma robusta desenvolvida para facilitar o lançamento de notas escolares em lote. O sistema permite que professores selecionem turmas e disciplinas para gerenciar avaliações de forma dinâmica e intuitiva.
 
-## 🚀 Tecnologias
+## Tecnologias
 
 ### Frontend
 - **Angular 18+** (Standalone Components)
@@ -19,7 +21,7 @@ O **EduScore** é uma plataforma robusta desenvolvida para facilitar o lançamen
 
 ---
 
-## 🛠️ Arquitetura do Banco de Dados
+## Arquitetura do Banco de Dados
 
 O sistema utiliza um banco de dados relacional com as seguintes entidades principais:
 
@@ -30,14 +32,14 @@ O sistema utiliza um banco de dados relacional com as seguintes entidades princi
 - **Nota**: A relação final entre Aluno, Avaliação e o valor atingido.
 
 ### Modelo de Dados (Seed Inicial)
-O arquivo `src/main/resources/data.sql` popula o ambiente com:
+O arquivo `src/main/resources/import.sql` popula o ambiente com:
 - Turmas: `9º Ano A` e `1º Ano Médio`.
 - Disciplinas com avaliações configuradas por peso.
 - Alunos distribuídos entre as turmas para testes de carga em lote.
 
 ---
 
-## 💻 Funcionalidades do Frontend
+## Funcionalidades do Frontend
 
 ### Grade de Lançamento Dinâmica
 A principal inovação do frontend é a **Grade Dinâmica**. Diferente de tabelas estáticas, as colunas de avaliações são geradas em tempo real:
@@ -53,7 +55,25 @@ Ao clicar em "Salvar Lançamentos em Lote", o frontend mapeia o dicionário de n
 
 ---
 
-## ⚙️ Configuração do Ambiente
+## Garantia de Qualidade (Testes)
+
+O projeto implementa uma pirâmide de testes para garantir a confiabilidade das operações críticas.
+
+### Backend (JUnit 5 & Mockito)
+Focado na integridade dos dados e segurança das regras de negócio.
+- **Testes de Serviço (`BoletimServiceTest`)**: Valida o processamento do lote de notas e a existência de dependências (Aluno/Avaliação) antes da persistência.
+- **Testes de Controller (`NotaControllerTest`)**: Garante que o endpoint de lote responda corretamente ao contrato JSON estabelecido.
+- **Execução**: No diretório do backend, execute `mvn test`.
+
+### Frontend (Jasmine & Karma)
+Focado na precisão dos cálculos e integração com a API.
+- **Testes de Componente (`lancamento-boletim.component.spec.ts`)**: Valida matematicamente a regra da **Média Ponderada** e o comportamento da interface.
+- **Testes de Serviço (`api.spec.ts`)**: Verifica se as chamadas assíncronas estão apontando para os endpoints corretos do servidor.
+- **Execução**: No diretório do frontend, execute `ng test`.
+
+---
+
+## Configuração do Ambiente
 
 ### Requisitos
 - Node.js 18+
@@ -68,12 +88,12 @@ Ao clicar em "Salvar Lançamentos em Lote", o frontend mapeia o dicionário de n
 ### Executando o Frontend
 1. Navegue até a pasta `frontend`.
 2. Instale as dependências: `npm install`
-3. Inicie o servidor com proxy para o backend: `npm start`
+3. Inicie o servidor: `ng serve`
 4. Acesse: `http://localhost:4200`
 
 ---
 
-## 📝 Endpoints Principais (API)
+## Endpoints Principais (API)
 
 | Método | Endpoint | Descrição |
 | :--- | :--- | :--- |
@@ -81,6 +101,6 @@ Ao clicar em "Salvar Lançamentos em Lote", o frontend mapeia o dicionário de n
 | GET | `/api/disciplinas` | Lista todas as disciplinas |
 | GET | `/api/alunos?turmaId={id}` | Busca alunos por turma |
 | GET | `/api/avaliacoes?disciplinaId={id}` | Busca provas por disciplina |
-| POST | `/api/notas/lote` | Salva uma lista de notas |
+| POST | `/api/notas/lote` | Salva uma lista de notas processadas |
 
 ---
