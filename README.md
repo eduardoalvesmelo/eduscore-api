@@ -104,3 +104,40 @@ Focado na precisão dos cálculos e integração com a API.
 | POST | `/api/notas/lote` | Salva uma lista de notas processadas |
 
 ---
+
+## Imagens
+Demonstração do Sistema
+1. Banco de Dados H2 (Console)
+Visualização da persistência de dados. Aqui podemos ver a tabela NOTA com os valores, IDs dos alunos e das avaliações populados corretamente.
+
+<p align="left">
+<img src="https://github.com/user-attachments/assets/b49396d5-29c6-437f-b184-a75aed54bb85" width="80%" />
+</p>
+
+2. Interface de Gestão de Notas (Frontend)
+A grade dinâmica carregada com os filtros de "1º Ano Médio" e "Matemática". Note o cálculo da média em tempo real e o destaque visual para notas baixas.
+
+<p align="left">
+<img src="https://github.com/user-attachments/assets/240ed056-2713-4f00-9d78-5ed34725b8f2" width="80%" />
+</p>
+
+3. Documentação da API (Swagger UI)
+Interface do Swagger facilitando o teste dos endpoints REST, com destaque para o controller de notas e o método de salvamento em lote.
+
+<p align="left">
+<img src="https://github.com/user-attachments/assets/fba64522-416e-4b38-96ab-393f714bf90d" width="80%" />
+</p>
+
+4. Execução dos Testes no Backend
+Suíte de testes JUnit passando com sucesso no IntelliJ, validando o BoletimService e o NotaController.
+
+<p align="left">
+<img src="https://github.com/user-attachments/assets/6a8350fc-c2f9-4c37-bf0b-892a2bb4de86" width="80%" />
+</p>
+
+5. Execução dos Testes no Frontend
+Testes unitários do Angular (Jasmine/Karma) validados, garantindo que a lógica de componentes e serviços está íntegra.
+
+<p align="left">
+<img src="https://github.com/user-attachments/assets/ce8dce7e-8db4-4695-93c5-15a1b274059d" width="80%" />
+</p>
